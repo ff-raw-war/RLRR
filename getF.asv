@@ -1,0 +1,19 @@
+function F = getF(X, C, L, A, J, beta, mu);
+    % aaF + Fbb + c =0
+    % if gpuDeviceCount >= 1
+    if gpuDeviceCount >= 1
+        X = gpuArray(X);
+        C = gpuArray(C);
+        L = gpuArray(L);
+        J = gpuArray(J);
+        AA = mu*A'*A;
+        BB = 4*beta*L*pinv(C*C');
+        CC = -A'*J*C'*pinv(C*C') - mu*A'*X*C'*pinv(C*C');
+        F = lyap(AA, BB, CC);
+    else
+        AA = mu*A'*A;
+        BB = 4*beta*L*pinv(C*C');
+        CC = -A'*J*C'*pinv(C*C') - mu*A'*X*C'*pinv(C*C');
+        F = lyap(AA, BB, CC);
+    end
+end
